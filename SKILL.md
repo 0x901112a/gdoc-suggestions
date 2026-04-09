@@ -1,3 +1,8 @@
+---
+name: gdoc-suggest
+description: Make suggestions (tracked changes) on Google Docs programmatically via the gdoc-suggest CLI. Use when the user asks to suggest edits, add translations, or make tracked changes to a Google Doc.
+---
+
 # gdoc-suggest — Google Docs Suggestions CLI
 
 Make suggestions (tracked changes) on Google Docs programmatically. Works on the original document — preserves comments, sharing, and version history.
