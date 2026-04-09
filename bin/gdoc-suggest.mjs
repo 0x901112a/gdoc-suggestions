@@ -166,6 +166,12 @@ async function main() {
 }
 
 main().catch(err => {
-  console.error(`Error: ${err.message}`);
+  if (err.message && (err.message.includes('auth expired') || err.message.includes('re-authenticate'))) {
+    console.error(`\n  ${err.message}\n`);
+  } else if (err.message && err.message.includes('profile is locked')) {
+    console.error(`\n  ${err.message}\n`);
+  } else {
+    console.error(`Error: ${err.message}`);
+  }
   process.exit(1);
 });
