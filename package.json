@@ -19,5 +19,8 @@
     "playwright": "^1.59.0"
   },
   "keywords": ["google-docs", "suggestions", "playwright", "automation"],
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
 }

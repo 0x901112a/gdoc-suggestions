@@ -45,6 +45,17 @@ function hasFlag(flag) {
   return args.includes(flag);
 }
 
+function findOccurrenceIndex(docText, searchText, occurrence = 1) {
+  let idx = -1;
+  let searchFrom = 0;
+  for (let n = 0; n < occurrence; n++) {
+    idx = docText.indexOf(searchText, searchFrom);
+    if (idx === -1) return -1;
+    searchFrom = idx + 1;
+  }
+  return idx;
+}
+
 async function main() {
   if (!command || command === '--help' || command === '-h') usage();
 
@@ -59,7 +70,12 @@ async function main() {
     usage();
   }
 
-  const matchNum = getFlag('--match') ? parseInt(getFlag('--match')) : undefined;
+  const matchRaw = getFlag('--match');
+  const matchNum = matchRaw ? parseInt(matchRaw, 10) : undefined;
+  if (matchRaw && (isNaN(matchNum) || matchNum < 1)) {
+    console.error('Error: --match requires a positive integer (e.g., --match 2)');
+    process.exit(1);
+  }
   const json = hasFlag('--json');
 
   const doc = await GDocSuggestions.open(docId);
@@ -87,15 +103,7 @@ async function main() {
           console.error('Error: insert requires <afterText> and <text> arguments');
           usage();
         }
-        const docText = doc.docText;
-        const occurrence = matchNum || 1;
-        let idx = -1;
-        let searchFrom = 0;
-        for (let n = 0; n < occurrence; n++) {
-          idx = docText.indexOf(afterText, searchFrom);
-          if (idx === -1) break;
-          searchFrom = idx + 1;
-        }
+        const idx = findOccurrenceIndex(doc.docText, afterText, matchNum || 1);
         if (idx === -1) {
           console.error(`Error: anchor text not found: "${afterText}"` + (matchNum ? ` (match ${matchNum})` : ''));
           process.exit(1);
@@ -122,15 +130,7 @@ async function main() {
           console.error('Error: format requires <text> argument');
           usage();
         }
-        const docText = doc.docText;
-        const occurrence = matchNum || 1;
-        let idx = -1;
-        let searchFrom = 0;
-        for (let n = 0; n < occurrence; n++) {
-          idx = docText.indexOf(text, searchFrom);
-          if (idx === -1) break;
-          searchFrom = idx + 1;
-        }
+        const idx = findOccurrenceIndex(doc.docText, text, matchNum || 1);
         if (idx === -1) {
           console.error(`Error: text not found: "${text}"` + (matchNum ? ` (match ${matchNum})` : ''));
           process.exit(1);
@@ -180,12 +180,8 @@ async function main() {
 }
 
 main().catch(err => {
-  if (err.message && (err.message.includes('auth expired') || err.message.includes('re-authenticate'))) {
-    console.error(`\n  ${err.message}\n`);
-  } else if (err.message && err.message.includes('profile is locked')) {
-    console.error(`\n  ${err.message}\n`);
-  } else {
-    console.error(`Error: ${err.message}`);
-  }
+  const msg = err.message || String(err);
+  const isUserActionNeeded = msg.includes('auth expired') || msg.includes('re-authenticate') || msg.includes('profile is locked');
+  console.error(isUserActionNeeded ? `\n  ${msg}\n` : `Error: ${msg}`);
   process.exit(1);
 });
