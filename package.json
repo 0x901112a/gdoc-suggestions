@@ -1,0 +1,23 @@
+{
+  "name": "gdoc-suggestions",
+  "version": "0.1.0",
+  "description": "Programmatic Google Docs suggestions via headless Playwright",
+  "type": "module",
+  "bin": {
+    "gdoc-suggest": "./bin/gdoc-suggest.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.mjs"
+  },
+  "scripts": {
+    "test": "node test/test.mjs",
+    "test:edge": "node test/test-edge-cases.mjs",
+    "test:structural": "node test/test-structural.mjs",
+    "test:all": "node test/test.mjs && node test/test-edge-cases.mjs && node test/test-structural.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.59.0"
+  },
+  "keywords": ["google-docs", "suggestions", "playwright", "automation"],
+  "license": "MIT"
+}
