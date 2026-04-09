@@ -13,7 +13,12 @@
 
 import { GDocSuggestions } from '../lib/index.mjs';
 
-const TEST_DOC_ID = '1EoJPXsk319JiWupQrlAZGqj0kpDzinUumLm7gLl1E3g';
+const TEST_DOC_ID = process.env.GDOC_TEST_DOC_ID;
+if (!TEST_DOC_ID) {
+  console.error('Set GDOC_TEST_DOC_ID environment variable to a Google Doc ID you own.');
+  console.error('The doc should contain test content (see README for setup).');
+  process.exit(1);
+}
 
 let passed = 0;
 let failed = 0;

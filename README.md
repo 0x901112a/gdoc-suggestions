@@ -61,6 +61,12 @@ Always wrap text arguments in double quotes.
 - If the find text appears multiple times, you **must** specify `--match N` to disambiguate.
 - One operation per invocation (each command opens and closes a browser session).
 
+## Security
+
+- `~/.google-docs-automation` contains your live Google session cookies. **Treat this directory like a password.** Do not share, commit, or back up to cloud storage without encryption.
+- Running `gdoc-suggest login` grants the tool persistent access to your Google account until you delete the directory or revoke sessions in [Google Security settings](https://myaccount.google.com/security).
+- The tool uses `--disable-blink-features=AutomationControlled` to avoid bot detection. This is standard practice for browser automation tools.
+
 ## Note
 
 Tested on macOS. Other platforms may work but are not actively tested.

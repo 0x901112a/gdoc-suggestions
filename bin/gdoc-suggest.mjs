@@ -88,13 +88,20 @@ async function main() {
           usage();
         }
         const docText = doc.docText;
-        const idx = docText.indexOf(afterText);
+        const occurrence = matchNum || 1;
+        let idx = -1;
+        let searchFrom = 0;
+        for (let n = 0; n < occurrence; n++) {
+          idx = docText.indexOf(afterText, searchFrom);
+          if (idx === -1) break;
+          searchFrom = idx + 1;
+        }
         if (idx === -1) {
-          console.error(`Error: anchor text not found: "${afterText}"`);
+          console.error(`Error: anchor text not found: "${afterText}"` + (matchNum ? ` (match ${matchNum})` : ''));
           process.exit(1);
         }
         await doc.suggestInsertText({ index: idx + afterText.length, text });
-        result = { op: 'insert', afterText, text };
+        result = { op: 'insert', afterText, text, matchNum };
         break;
       }
 
@@ -116,9 +123,16 @@ async function main() {
           usage();
         }
         const docText = doc.docText;
-        const idx = docText.indexOf(text);
+        const occurrence = matchNum || 1;
+        let idx = -1;
+        let searchFrom = 0;
+        for (let n = 0; n < occurrence; n++) {
+          idx = docText.indexOf(text, searchFrom);
+          if (idx === -1) break;
+          searchFrom = idx + 1;
+        }
         if (idx === -1) {
-          console.error(`Error: text not found: "${text}"`);
+          console.error(`Error: text not found: "${text}"` + (matchNum ? ` (match ${matchNum})` : ''));
           process.exit(1);
         }
         await doc.suggestFormatText({
